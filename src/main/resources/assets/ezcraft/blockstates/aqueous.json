@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "stage=tank": {
+      "model": "ezcraft:block/aqueous/tank"
+    },
+    "stage=normal": {
+      "model": "ezcraft:block/aqueous/legs_cover_tank_pump"
+    },
+    "stage=input": {
+      "model": "ezcraft:block/aqueous/input"
+    },
+    "stage=output": {
+      "model": "ezcraft:block/aqueous/output"
+    }
+  }
+}

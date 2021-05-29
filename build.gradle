@@ -1,0 +1,129 @@
+buildscript {
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.+', changing: true
+        // Make sure this version matches the one included in Kotlin for Forge
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0"
+        // OPTIONAL Gradle plugin for Kotlin Serialization
+        classpath "org.jetbrains.kotlin:kotlin-serialization:1.5.0"
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'kotlin'
+
+version = '1.0.0'
+group = 'example.ezcraft'
+archivesBaseName = 'ezcraft'
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+minecraft {
+    // Change to your preferred mappings
+    mappings channel: 'official', version: '1.16.5'
+    // Add your AccessTransformer
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                ezcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                ezcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'ezcraft', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources')
+
+            mods {
+                ezcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    maven {
+        name = 'Kotlin for Forge'
+        url = 'https://thedarkcolour.github.io/KotlinForForge/'
+    }
+    maven { url "https://maven.tehnut.info" }
+
+    maven { url "http://chickenbones.net/maven/" }
+
+    maven { url 'https://modmaven.dev/' }
+
+    mavenCentral()
+}
+
+dependencies {
+    // Use the latest version of Minecraft Forge
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
+
+    // Use the latest version of KotlinForForge
+    fg.deobf(implementation('thedarkcolour:kotlinforforge:1.12.0'))
+
+
+    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
+    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+    compileOnly "mekanism:Mekanism:${mc_version}-${mekanism_version}:api"
+    compileOnly "mekanism:Mekanism:${mc_version}-${mekanism_version}" // core
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}") // Mekanism: Tools
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:additions") // Mekanism: Tools
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:generators") // Mekanism: Tools
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:tools") // Mekanism: Tools
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+        languageVersion = '1.5'
+        apiVersion = '1.5'
+    }
+}
+
+// Include assets and data from data generators
+sourceSets.main.resources {
+    srcDirs 'src/generated/resources/'
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "ezcraft",
+                "Specification-Vendor": "ezcraftsareus",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" :"ezcraftsareus",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
